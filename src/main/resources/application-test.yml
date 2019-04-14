@@ -1,0 +1,74 @@
+#服务配置
+server:
+  port: 8080
+  tomcat:
+      uri-encoding: UTF-8
+#  servlet:
+#    context-path: /
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  application:
+#  需要指明spring.application.name,这个很重要，这在以后的服务与服务之间相互调用一般都是根据这个name
+    name:
+  datasource:
+    url: jdbc:mysql://localhost:3306/daotable?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull&serverTimezone=CTT&useSSL=false
+    username: root
+    password: 123
+    driver-class-name: com.mysql.jdbc.Driver
+#   Spring Boot官方推荐的数据库连接池是Hikari，从一些第三方的评测结果看，Hikari的性能比Druid要好，但是Druid自带各种监控工具，背后又有阿里一直在为它背书
+#   hikari数据源配置，
+    hikari:
+      connection-test-query: SELECT 1 FROM DUAL
+      connection-timeout: 30000
+      maximum-pool-size: 20
+      max-lifetime: 1800000
+      minimum-idle: 5
+
+# redis配置
+  redis:
+    host: localhost
+    password: 123
+    port: 6379
+
+mybatis:
+  mapperLocations: classpath:com/example/startdemo/business/dao/mapper/*.xml
+  typeAliasesPackage: com.example.startdemo.domain.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+#分页的配置
+pagehelper:
+  offset-as-page-num: true
+  row-bounds-with-count: true
+  reasonable: true
+  helperDialect: mysql
+  params: count=countSql
+
+# 日志配置
+#debug: true
+logging:
+  config: classpath:project-logs.xml
+# 指定具体包下的日志级别
+#  level:
+#    com:  DEBUG
+
+# logback 配置
+logback:
+  # 日志路径
+  path: logs
+  # 日志级别
+  root-level: info
+  # 文件的最大数量
+  max-history: 50
+  # 文件的最大文件大小
+  max-file-size: 100MB
+  # 日志字符编码
+  charset: UTF-8
+  # 日志格式
+  console-pattern: '%d{yyyy-MM-dd HH:mm:ss.SSS} %boldYellow([%thread]) %highlight(%-5level) %boldGreen(%logger{50}.%M\(%F:%L\)) - %msg%n'
+  file-pattern: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n'
+  # 控制日志是否在控制台打印 默认打印
+  output-console: true
