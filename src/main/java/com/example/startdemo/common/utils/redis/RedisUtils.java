@@ -6,6 +6,7 @@ import com.example.startdemo.common.utils.redis.constant.ExpireTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
@@ -45,6 +46,14 @@ public class RedisUtils {
         }
     }
 
+
+    public static void set(String key,String hashKey,Object value,int seconds){
+        redisTemplate.opsForHash().put(key,hashKey, JSON.toJSONString(value));
+        if(seconds > 0){
+            redisTemplate.expire(key, seconds, TimeUnit.SECONDS);
+        }
+    }
+
     /**
      * 将value对象写入缓存,不失效
      * @param key
@@ -70,9 +79,22 @@ public class RedisUtils {
         return (T)JSON.parseObject(value,clazz);
     }
 
+    public static <T> T get(String key,String hashKey, Class<T> clazz){
+        String value = (String) redisTemplate.opsForHash().get(key,hashKey);
+        return (T)JSON.parseObject(value,clazz);
+    }
+
+
+    public static void incr(String key,String hashKey){
+         redisTemplate.opsForHash().increment(key,hashKey,1);
+    }
+
+
     /**删除**/
     public static void delete(String key) {
         redisTemplate.delete(key);
     }
+
+
 
 }
